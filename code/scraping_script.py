@@ -33,6 +33,7 @@ import os
 import sys
 import codecs
 from bs4 import BeautifulSoup
+from plotline_utilities import progression_bar
 from selenium import webdriver
 
 def get_all_movies():
@@ -175,24 +176,6 @@ def handle_movie (movie, browser):
                     + movie_title + ';' + filename + '\n'
             with open(success_filename, 'a') as f:
                 f.write(new_row)
-
-
-def progression_bar(i, Ntot, Nbars=60, char='-'):
-    '''
-    Show a progression bar with Nbars
-
-    Parameters:
-    -----------
-    i: index of the files
-    Ntot: total number of files
-    Nbars: how many bars to fill
-    char: character to show as progression
-    '''
-    nbars = int( (i+1)*1./Ntot * Nbars )
-    sys.stdout.write('\r[' + nbars*char)
-    sys.stdout.write((Nbars-nbars)*' '+']')
-    sys.stdout.write('%d/%d'%(i, Ntot))
-    sys.stdout.flush()
 
 if __name__ == '__main__':
 
