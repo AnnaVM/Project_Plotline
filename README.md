@@ -4,6 +4,21 @@ This is a **data science project** which analyzes different **movie scripts** an
 
 The aim is then to cluster the movies based on their emotional plotline.
 
+# Requirements and installation
+
+The required Python packages are listed in the file `requirements.txt`. In order to install them, please type:
+```
+pip install -r requirements.txt
+```
+
+In addition, you will need to download the `nltk` corpus (i.e. the data which is needed for the Natural Language Processing package `nltk`). To do so, type the following code in a terminal:
+```
+python
+>>> import nltk
+>>> nltk.download()
+```
+Then click on `Download` on the graphical window.
+
 # Usage and data pipeline
 
 If you wish to reproduce the analysis, here are the different steps to carry out.
@@ -19,8 +34,15 @@ The code creates a directory `data/scraping`, where it stores the movie scripts,
 
 ## Extract the emotional plotline
 
-**To be done**  
-Quantify the amount of each of 8 different emotions as a function of time, for each movie.
+For each movie script, the text is divided into *windows* of 100 consecutive words, and a quantified emotional content is associated to each bunch.
+
+This is done by looking up each word of a given *window* in the [Word-Emotion Association Lexicon](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm), which associates words with 8 emotions (anger, anticipation, disgust, fear, joy, sadness, surprise, trust) and 2 sentiments (negative, positive). A copy of the NRC lexicon is stored in `data/emotions/NRC_emotions.txt`.
+
+The code that extract the emotional content of each movie is in `code/emotions_script.py`. It can be run by typing:
+```
+cd code
+python emotions_script.py
+```
 
 ## Compute the pairwise distance
 
@@ -30,5 +52,3 @@ Using DTW, calculate the pairwise distance between all the movies.
 ## Cluster the movies
 
 **To be done**
-
-
