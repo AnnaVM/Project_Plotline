@@ -1,6 +1,7 @@
 '''
-this script gets the movie script, movie name, genres and writer
-the progression of scraping can be followed on the terminal
+This script gets the movie script, movie name, genres and writer, for
+approximately 1000 scripts, from the website IMSDb.
+The progression of scraping can be followed on the terminal.
 
 Usage:
 ------
@@ -10,16 +11,20 @@ $ python scraping_script.py
 Challenges --> choices:
 -----------------------
 some scripts are in html, some in pdf (<50) --> pdfs are ignored
-some html scripts have javascript --> requests is not enough, selenium is used
+some html scripts have javascript --> the package requests is not enough,
+and the package selenium is used instead
 
 Files created:
 --------------
-in ../data/scraping/texts folder: all of the scripts available in html
-in ../data/scraping folder: a successful_files.csv with a row for each movie
-successfully scraped, with in each row:
-    the name; writer list; genre list; compact name
-                            a movies_pdf_script.csv with a row for each movie
-not available in html (usually as pdf) with simply the title of the movie
+in the ../data/scraping/texts folder:
+    all the scripts which were available in html (one file per movie)
+in the ../data/scraping folder:
+    * successful_files.csv: a CSV file with one row for each movie which were
+      successfully scraped, with in each row:
+        the name; writer list; genre list; compact name
+    * movies_pdf_script.csv: a CSV file with one row for each movie which were
+      not available in html (usually as pdf) with simply the title of the movie
+    * scraping_error.csv: a list of movies that could not be scraped
 '''
 
 import requests
@@ -32,8 +37,10 @@ from selenium import webdriver
 
 def get_all_movies():
     '''
-    Scraping 'http://www.imsdb.com/all%20scripts/'
-    returns:
+    Scrape 'http://www.imsdb.com/all%20scripts/' to extract the list of
+    available scripts on IMSDb and the URL at which to access them.
+
+    Returns:
     --------
     movie list: list of tuples
         each tuple contains:
@@ -47,21 +54,23 @@ def get_all_movies():
     u'/Movie Scripts/10 Things I Hate About You Script.html',
     u'10_Things_I_Hate_About_You')
 
-    ex2
+    ex2:
     (u'Abyss, The', u'/Movie Scripts/Abyss, The Script.html', u'Abyss')
     '''
+    # Parse the page http://www.imsdb.com/all%20scripts/ with beautiful soup
     link_all_scripts = 'http://www.imsdb.com/all%20scripts/'
     response_all_scripts = requests.get(link_all_scripts)
     soup = BeautifulSoup(response_all_scripts.text, 'html.parser')
 
-    #page is constructed with tables, the 3 one is the one we want
+    # This webpage is constructed with tables, the 3rd one is the one we want
     find_tables = soup.findAll('td', valign='top')
     all_movies = find_tables[2].findAll('a')
 
-    # exemple of item in list all_movies
+    # Example of item in list all_movies
     # <a href="/Movie Scripts/10 Things I Hate About You Script.html"
     # title="10 Things I Hate About You Script">10 Things I Hate About You</a>
 
+    # Build the final list of tuples, which is to be returned
     movies = [(movie_info.string, \
               movie_info["href"], \
               re.split("[,.]",movie_info.string)[0].replace(' ', '_'))
@@ -70,32 +79,45 @@ def get_all_movies():
 
 def check_movie_info(movies):
     '''
-    short script to check that list of tuples (movie title, link, movie_title)
+    Check that the list of tuples (movie title, link, movie_title)
     in movies have a link that start with '/Movie Scripts/'
+
+    Parameter
+    ---------
+    movies: list of tuples
+        A list returned by the function `get_all_movies`
+
+    Returns
+    -------
+    A string that indicates whether there was a problem or not
     '''
     for movie in movies:
         if movie[1][0:15] !='/Movie Scripts/':
-            return 'somethings rotten in the state of Denmark'
-    return 'flying true and straight'
+            return 'One of the movie link does not start with /Movie Scripts/.'
+    return 'All movie URLs have a correct format.'
 
 def handle_movie (movie, browser):
     '''
-    parameters:
-    -----------
-    movie: a tuple from movies list created by get_all_movies
+    Download the script corresponding to `movie`, using selenium
+
+    Parameters
+    ----------
+    movie: tuple
+        a tuple from the `movies` list created by `get_all_movies`
             (movie title, link to movie page, movie_title)
-    browser: browser created from selenium to get complete html page
+    browser: object
+        the browser used by selenium to get complete html page
     '''
-    #unpack tuple
+    # Unpack tuple
     title, link_to_movie_page, movie_title = movie
 
-    #interrogate the page with all the movie information (ratings, writer,
-    #genre, link to script)
+    # Interrogate the page with all the movie information (ratings, writer,
+    # genre, link to script)
     full_html_link = u'http://www.imsdb.com' + link_to_movie_page
     response_script = requests.get(full_html_link)
     soup = BeautifulSoup(response_script.text, 'html.parser')
 
-    #get all relevant information (genre, writer, script) from page
+    # Get all relevant information (genre, writer, script) from page
     list_links = soup.findAll('table', "script-details")[0].findAll('a')
     genre = []
     writer = []
@@ -106,51 +128,60 @@ def handle_movie (movie, browser):
             writer.append(link.get_text())
         if href[0:7]== "/genre/":
             genre.append(link.get_text())
-        if href[0:9]== "/scripts/" and href[-5:]=='.html':
+        if href[0:9]== "/scripts/":
             script = href
-    #if we get a link to html, let's write the script to a file and include
-    #the movie in a csv file with all information
-    if script:
-        #writing the script text to the file
-        full_html_to_text =  u'http://www.imsdb.com' + script
 
-        browser.get(full_html_to_text)
-        response_to_text = browser.page_source
-        soup = BeautifulSoup(response_to_text, 'html.parser')
+    # If the link to the script points to a PDF, skip this movie, but log
+    # the information in `movies_pdf_script.csv`
+    if script != '' and script[-4:]=='pdf':
+        path_to_directory = '../data/scraping/'
+        pdf_logging_filename = path_to_directory + 'movies_pdf_script.csv'
+        with open(pdf_logging_filename, 'a') as f:
+            new_row = title + '\n'
+            f.write(new_row)
 
-        path_to_file = '../data/scraping/texts/'
-        filename = path_to_file + movie_title + '.txt'
-        with codecs.open(filename, "w", encoding='ascii', errors='ignore') as f:
-            #if scraping does not go as planned (different structure)
-            if len(soup.findAll('td', "scrtext"))!=1:
-                path_to_file = '../data/scraping/'
-                scraping_error_files = path_to_file + 'scraping_error.csv'
-                with open(scraping_error_files, 'a') as i:
-                    new_row = title
-                    i.write(new_row)
-            #normal scraping
-            else:
-                text = soup.findAll('td', "scrtext")[0].get_text()
+    # If the link to the script points to an html page, write the corresponding
+    # text to a file and include the movie in a csv file, with meta-information
+    elif script != '' and script[-5:]=='.html':
+
+        # Parse the webpage which contains the script text
+        full_script_url =  u'http://www.imsdb.com' + script
+        browser.get(full_script_url)
+        page_text = browser.page_source
+        soup = BeautifulSoup(page_text, 'html.parser')
+
+        # If the scraping does not go as planned (unexpected structure),
+        # log the file name in an error file
+        if len(soup.findAll('td', "scrtext"))!=1:
+            error_file_name = '../data/scraping/scraping_error.csv'
+            with open(error_file_name, 'a') as error_file:
+                new_row = title + '\n'
+                error_file.write( new_row )
+
+        # Normal scraping:
+        else:
+            # Write the script text to a file
+            path_to_directory = '../data/scraping/texts/'
+            filename = path_to_directory + movie_title + '.txt'
+            text = soup.findAll('td', "scrtext")[0].get_text()
+            with codecs.open(filename, "w",
+                    encoding='ascii', errors='ignore') as f:
                 f.write(text)
-        #including the movie in csv of successfulmy scraped movies
-        path_to_file = '../data/scraping/'
-        successful_files = path_to_file + 'successful_files.csv'
-        with open(successful_files, 'a') as h:
+
+            # Add the meta-information to a CSV file
+            path_to_directory = '../data/scraping/'
+            success_filename = path_to_directory + 'successful_files.csv'
             new_row = title + ';' + str(genre) + ';' + str(writer) + ';' \
                     + movie_title + ';' + filename + '\n'
-            h.write(new_row)
-    else:
-        #some movies have scripts as pdf, the movie names are recorded
-        path_to_file = '../data/scraping/'
-        pdf_files = path_to_file + 'movies_pdf_script.csv'
-        with open(pdf_files, 'a') as g:
-            new_row = title
-            g.write(new_row)
+            with open(success_filename, 'a') as f:
+                f.write(new_row)
+
 
 def progression_bar(i, Ntot, Nbars=60, char='-'):
     '''
-    Shows a progression bar with Nbars
-    parameters:
+    Show a progression bar with Nbars
+
+    Parameters:
     -----------
     i: index of the files
     Ntot: total number of files
@@ -164,7 +195,8 @@ def progression_bar(i, Ntot, Nbars=60, char='-'):
     sys.stdout.flush()
 
 if __name__ == '__main__':
-    #create data/scraping/texts files
+
+    # Create data/scraping/texts files
     if not os.path.exists('../data'):
         os.mkdir('../data')
         print 'making ../data folder'
@@ -175,11 +207,12 @@ if __name__ == '__main__':
         os.mkdir('../data/scraping/texts')
         print 'making ../data/scraping/texts folder'
 
-    #get all the movie information
+    # List all the available movies, and the corresponding URL links
     movies = get_all_movies()
     print check_movie_info(movies)
-    #get all the scripts (in texts folder) and summary of movies in .csv format
-    #(in scraping folder)
+
+    # Write all the scripts (in texts folder) and the summary of the movies
+    # in .csv format (in scraping folder)
     browser = webdriver.Firefox()
     for i,movie in enumerate(movies):
         handle_movie(movie, browser)
@@ -190,7 +223,7 @@ movies that were not scraped successfully:
 -------
 3 texts are manually removed:
 Appolo 13 & Scary Movie 2 (no actual script available on website)
-They (zero octet file - the results of the findAll is a little different than
+(zero octet file - the results of the findAll is a little different than
     for other movies: as only one movie was in this situation, it is ignored)
 
 list of pdfs:
