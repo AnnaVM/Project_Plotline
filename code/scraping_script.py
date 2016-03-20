@@ -133,7 +133,7 @@ def handle_movie (movie, browser):
 
     # If the link to the script points to a PDF, skip this movie, but log
     # the information in `movies_pdf_script.csv`
-    if script != '' and script[-4:]=='pdf':
+    if script == '' or script[-5:] != '.html':
         path_to_directory = '../data/scraping/'
         pdf_logging_filename = path_to_directory + 'movies_pdf_script.csv'
         with open(pdf_logging_filename, 'a') as f:
@@ -142,7 +142,7 @@ def handle_movie (movie, browser):
 
     # If the link to the script points to an html page, write the corresponding
     # text to a file and include the movie in a csv file, with meta-information
-    elif script != '' and script[-5:]=='.html':
+    else:
 
         # Parse the webpage which contains the script text
         full_script_url =  u'http://www.imsdb.com' + script
