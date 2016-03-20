@@ -15,7 +15,7 @@ The scripts are obtained by scraping the website [IMSDb](http://www.imsdb.com/).
 cd code/
 python scraping_script.py
 ```
-The code creates a directory `data/`, where it stores the movie scripts, along with some metainformation.
+The code creates a directory `data/scraping`, where it stores the movie scripts, along with some metainformation.
 
 ## Extract the emotional plotline
 
