@@ -18,7 +18,14 @@ $ python emotions_script.py
 
 Challenges --> choices:
 -----------------------
-increasing speed of code: using arrays, faster look up in the dataframe
+increasing speed of code: i) read NRC_emotions.txt into a dataframe,
+                          ii) pivot dataframe (to have word as index),
+                          iii) export to dictionary (word as key, 0/1s as array)
+                          iv) pretty obvious: vocabulary as set
+detecting emotions: words are lemmatized (time consumming operation)
+                   i) not stemmed, to keep real words to look up
+                   ii) sarcastic phrasing, or negative phrases, are not detected
+                    ('he was not happy' --> 'happy' will count as positive)
 
 Files created:
 --------------
@@ -106,14 +113,14 @@ def window_blocks(text, size_block=100):
         list_windows.append(window)
     return list_windows
 
-def emotion_counts(list_words, df, vocabulary):
+def emotion_counts(list_words, emotion_dict, vocabulary):
     '''
     parameters:
     -----------
     list of words (typically 100 words long)
-    df: from NRC emotions, of shape (word as index, emotions as column names)
-    vocabulary: list of unique words for which we have emotions
-                vocabulary = df[0].unique()
+    emotion_dict: from NRC emotions, of shape
+                    (word as key, 0/1s in array as value)
+    vocabulary: set of unique words for which we have emotions in the dictionary
 
     returns:
     --------
@@ -130,13 +137,13 @@ def emotion_counts(list_words, df, vocabulary):
     for word in list_words:
         if word in vocabulary:
             #looking up the word
-            emotion_for_word = df[ word ]
+            emotion_for_word = emotion_dict[ word ]
             # Adding up the emotions
             emotion_count += emotion_for_word
 
     return emotion_count
 
-def get_emotions(filename, path_to_file, df, vocabulary,
+def get_emotions(filename, path_to_file, emotion_dict, vocabulary,
                  print_to_file=False,
                  verbose=False):
     '''
@@ -145,9 +152,9 @@ def get_emotions(filename, path_to_file, df, vocabulary,
     filename: as STR
     path_to_file: as STR
         such that 'path_to_file/filename.txt' is the script being analyzed
-    df: dictionary with word as index and 0/1 in emotion columns (see
+    emotion_dict: dictionary with word as key and 0/1s in array as value (see
         load_dictionary_and_vocabulary function)
-    vocabulary: all the words from the previous dictionary
+    vocabulary: all the words from the previous dictionary in set
     print_to_file: BOOL gives the option to save the counts as array in
                     ../data/emotions/arrays/filename.npy
     verbose: BOOL that prints progress (every 10 windows treated)
@@ -163,7 +170,7 @@ def get_emotions(filename, path_to_file, df, vocabulary,
     index = 0
     for window in list_windows:
         index +=1
-        list_emotions.append( emotion_counts(window, df , vocabulary) )
+        list_emotions.append(emotion_counts(window, emotion_dict , vocabulary))
         if index%10==0 and verbose:
             print index
     array_emotions = np.array(list_emotions)
@@ -178,7 +185,7 @@ if __name__ == '__main__':
 
     # Create the proper directories
     if not os.path.exists('../data/emotions/arrays'):
-        os.mkdir('../data/emotions/arrays') 
+        os.mkdir('../data/emotions/arrays')
 
     # Loop through the script files
     path_to_file = '../data/scraping/texts'
