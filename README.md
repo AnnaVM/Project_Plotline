@@ -34,7 +34,7 @@ The code creates a directory `data/scraping`, where it stores the movie scripts,
 
 ## Extract the emotional plotline
 
-For each movie script, the text is divided into *windows* of 100 consecutive words, and a quantified emotional content is associated to each bunch.
+For each movie script, the text is divided into *windows* of 100 consecutive words, and a quantified emotional content is associated to each window.
 
 This is done by looking up each word of a given *window* in the [Word-Emotion Association Lexicon](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm), which associates words with 8 emotions (anger, anticipation, disgust, fear, joy, sadness, surprise, trust) and 2 sentiments (negative, positive). A copy of the NRC lexicon is stored in `data/emotions/NRC_emotions.txt`.
 
