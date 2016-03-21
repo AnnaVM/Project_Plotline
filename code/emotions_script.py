@@ -118,9 +118,14 @@ def emotion_counts(list_words, emotion_dict, vocabulary):
     parameters:
     -----------
     list of words (typically 100 words long)
-    emotion_dict: from NRC emotions, of shape
-                    (word as key, 0/1s in array as value)
-    vocabulary: set of unique words for which we have emotions in the dictionary
+    emotion_dict: dictionary
+        Contains the information of the NRC database, represented as:
+        - A word as a key
+        - A 1darray of shape (10,) containing 0s or 1s, as a value
+        Each element of the array corresponds to one of the emotions/sentiments
+
+    vocabulary: set
+        The unique words for which we have emotions in the NRC database
 
     returns:
     --------
@@ -181,7 +186,9 @@ def get_emotions(filename, path_to_file, emotion_dict, vocabulary,
 
 if __name__ == '__main__':
     NRC_emotions_file = '../data/emotions/NRC_emotions.txt'
-    emotion_dictionary, vocabulary = load_dictionary_and_vocabulary(NRC_emotions_file)
+    print 'Loading the NRC emotions database, please wait.'
+    emotion_dictionary, vocabulary = \
+                            load_dictionary_and_vocabulary(NRC_emotions_file)
 
     # Create the proper directories
     if not os.path.exists('../data/emotions/arrays'):
@@ -193,7 +200,7 @@ if __name__ == '__main__':
     index = 0
     Ntot = len(files)
     for filename in files[::-1]:
-        get_emotions( filename[:-4], path_to_file, emotion_dictionary, vocabulary,\
-                      print_to_file=True, verbose=False)
+        get_emotions( filename[:-4], path_to_file, emotion_dictionary,
+                    vocabulary, print_to_file=True, verbose=False)
         progression_bar(index, Ntot, Nbars=60, char='-')
         index += 1
