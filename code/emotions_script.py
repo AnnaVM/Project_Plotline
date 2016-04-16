@@ -197,9 +197,10 @@ if __name__ == '__main__':
     # Loop through the script files
     path_to_file = '../data/scraping/texts'
     files = os.listdir(path_to_file)
-    index = 0
-    Ntot = len(files)
-    for filename in files[::-1]:
+    index = 1
+    legit_files = [filename for filename in files if filename[-3:]=='txt']
+    Ntot = len(legit_files)
+    for filename in legit_files:
         get_emotions( filename[:-4], path_to_file, emotion_dictionary,
                     vocabulary, print_to_file=True, verbose=False)
         progression_bar(index, Ntot, Nbars=60, char='-')
