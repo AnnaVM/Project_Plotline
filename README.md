@@ -43,6 +43,23 @@ The code that extract the emotional content of each movie is in `code/emotions_s
 cd code
 python emotions_script.py
 ```
+The code creates a directory `data/emotions/arrays`, where it stores the datapoints (as .npy) needed to trace the graph for each movie.
+
+**Option 1:** To visualize the graphs, type:
+```
+cd code
+python load_plotline.py
+```
+
+and answer yes (y) to the prompt "Do you want to save plots as png (y/n)?". The graphs will be stored in a directory `data/emotions/graphs`.
+
+**Option 2:** To explore the data dynamically, open the corresponding Jupyter Notebook by typing:
+```
+cd jupyter
+jupyter notebook Visualize_Emotions.ipynb
+```
+The dashboard generated with iWidgets allows an interactive view of the different plots.
+![alt text](/Users/AnnaVMS/Desktop/Galvanize/bitbucket_file/project_plotline/md_images/md_dashboard.png "Dashboard View")
 
 ## Compute the pairwise distance
 
