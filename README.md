@@ -6,11 +6,14 @@ The aim is then to cluster the movies based on their emotional plotline.
 
 # Requirements and installation
 
-The required Python packages are listed in the file `requirements.txt`. In order to install them, please type:
+It is recommended to use the [Anaconda](https://www.continuum.io/downloads) distribution, to install a set of standard required packages. Once Anaconda is installed, please type:
+```
+conda install numpy pandas matplotlib numba jupyter
+```
+The additional required Python packages are listed in the file `requirements.txt`. In order to install them, please type:
 ```
 pip install -r requirements.txt
 ```
-
 In addition, you will need to download the `nltk` corpus (i.e. the data which is needed for the Natural Language Processing package `nltk`). To do so, type the following code in a terminal:
 ```
 python
