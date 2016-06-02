@@ -1,5 +1,5 @@
+import numpy as np
 import numba
-from numpy import *
 
 @numba.jit(nopython=True)
 def fill_distances( D1, x, y ):
@@ -18,8 +18,8 @@ def accumulate_distances( D0, D1 ):
 
 def _traceback(D):
     # Pre-allocate over-sized arrays
-    p = zeros( D.shape[0] + D.shape[1], dtype=int )
-    q = zeros( D.shape[0] + D.shape[1], dtype=int )
+    p = np.zeros( D.shape[0] + D.shape[1], dtype=int )
+    q = np.zeros( D.shape[0] + D.shape[1], dtype=int )
     n = find_path( D, p, q )
     return( p[n::-1], q[n::-1] )
     
@@ -56,17 +56,17 @@ def dtw(x, y):
     assert len(x)
     assert len(y)
     r, c = len(x), len(y)
-    D0 = zeros((r + 1, c + 1))
-    D0[0, 1:] = inf
-    D0[1:, 0] = inf
+    D0 = np.zeros((r + 1, c + 1))
+    D0[0, 1:] = np.inf
+    D0[1:, 0] = np.inf
     D1 = D0[1:, 1:] # view
     fill_distances( D1, x, y )
     C = D1.copy()
     accumulate_distances( D0, D1 )
     if len(x)==1:
-        path = zeros(len(y)), range(len(y))
+        path = np.zeros(len(y)), range(len(y))
     elif len(y) == 1:
-        path = range(len(x)), zeros(len(x))
+        path = range(len(x)), np.zeros(len(x))
     else:
         path = _traceback(D0)
     return D1[-1, -1] / sum(D1.shape), C, D1, path
