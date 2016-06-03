@@ -166,6 +166,9 @@ def get_emotions(filename, path_to_file, emotion_dict, vocabulary,
 
     returns:
     --------
+    an array [time, emotions]
+        time1[emotion1, emotion2, emotion3, ..., emotion10]
+        time2[emotion1, emotion2, emotion3, ..., emotion10]
     '''
     text = get_clean_text([filename], path_to_file)[0]
     list_windows = window_blocks(text, size_block=100)

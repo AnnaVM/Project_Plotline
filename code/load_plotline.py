@@ -39,7 +39,10 @@ class LoadPlotLine(object):
         self.colors = ['#ff0000', '#ffa500', '#ff69b4', '#228b22', '#ffff00',
                             'black', 'grey', '#4169e1', '#00bfff', '#7cfc00']
         self.emotion_dictionary_raw = {}
+        #entry type: key emotion, value array of counts
         self.emotion_dictionary_smooth ={}
+        #entry type: key (emotion, corresponding integer),
+        #            value [array of x, array of smoothed counts]
         #color choice is also inspired by Plutchik's wheel of emotions
 
     def load_emotions(self):
@@ -59,13 +62,24 @@ class LoadPlotLine(object):
                         3 'fear'                8 'surprise'
                         4 'joy'                 9 'trust'
                       by default, 'positive' and 'negative' are not plotted
+
+        creates:
+        --------
+        2 dictionaries and 1 np.array to look at the data
         '''
+        smoothed_emotion_list = []
+        #smoothed_emotion_list [list_for_anger, list_for_joy, ...]
         for index in list_emotions:
             emotion_scores = self.array_emotions[:,index]
             emotion = self.emotions[index]
             self.emotion_dictionary_raw[(emotion,index)] = emotion_scores
             x,y = smoothing(emotion_scores, frac=0.1)
             self.emotion_dictionary_smooth[(emotion,index)] = (x,y)
+            smoothed_emotion_list.append(y)
+        self.smoothed_array_emotions =\
+                            np.transpose(np.array(smoothed_emotion_list))
+        #the new array is structured like array_emotions
+
 
     def global_overview(self, list_emotions=range(5)+range(7,10),
                         percent_min=0, percent_max=1,
@@ -160,6 +174,11 @@ class LoadPlotLine(object):
 
 class ExploreData(object):
     '''
+    relies on the LoadPlotLine class
+    aims at providing the means to interactively explore the data
+
+    usage:
+    ------
     exploration = ExploreData()
     exploration.explore()
     then select the movie to look at
