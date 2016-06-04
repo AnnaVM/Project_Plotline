@@ -5,6 +5,7 @@ list of utilities functions defined in this code:
 - smoothing: smoothes out plots (Lowess)
 - make_title_dictionary: creates 2 dictionaries that allow to go from the
                         filename to the title of the movie
+- prepare_dictionary: makes a dictionary with the smoothed arrays
 '''
 
 import sys

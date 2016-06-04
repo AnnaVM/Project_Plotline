@@ -66,8 +66,17 @@ The dashboard generated with iWidgets allows an interactive view of the differen
 
 ## Compute the pairwise distance
 
-**To be done**  
-Using DTW, calculate the pairwise distance between all the movies.
+The aim is to compare the evolution of emotions in two movies. This relies on a building a comparison tool to contrast a set of 'emotion' plotlines defining a given movie to the set obtained for another. The approach retained here is based on Dynamic Time Wrapping, which calculates the pairwise distance between all the movies.
+
+The code that returns a dictionary containing the pairwise distances in pickled form is in `code/dtw_script.py`. It can be run by typing:
+```
+cd code
+python dtw_script.py
+```
+
+The dictionary of pairwise is stored in `data/distances.pkl`, the lookup structure is as follows: `distances[filename1][filename2]`.
+
+A Jupyter Notebook, `jupyter/Explore_closest_movies.ipynb`, is available to give an easy access the top 10 closest movies to a selected movie.
 
 ## Cluster the movies
 
