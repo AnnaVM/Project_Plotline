@@ -1,3 +1,23 @@
+'''
+usage:
+------
+3 actions are possible with this script:
+
+i) to see the costs associated with the number of clusters
+
+$ python medoids.py pick_k
+
+ii) to get a clustering done with, here 3 clusters
+
+$ python medoids.py k=3
+
+iii) to investigate how stable the 3 clusters are when the clustering
+is done several times (change 3 to number of clusters chosen)
+
+$ python medoids.py 3_stability
+
+'''
+
 # fonctions: cluster, assign_points_to_clusters, compute_new_medoid
 #from : https://github.com/salspaugh/machine_learning/blob/master/clustering/kmedoids.py
 # AnnaVM added some of the comments and most of the docstring
@@ -5,6 +25,8 @@
 
 import cPickle as pickle
 import matplotlib.pyplot as plt
+from plotline_utilities import progression_bar
+from collections import defaultdict
 from seaborn import heatmap
 import numpy as np
 import pandas as pd
@@ -281,6 +303,78 @@ def visualize_clusters(dict_clusters_mask, dict_clusters_movie_names,distances):
 
     return list_distances, d_intracluster_distances
 
+def investigate_stability(movies, distances, times_run, k):
+    '''
+    exploring the stability of the clusters
+    the clustering (with 100 initiations to enhance the chance of reaching the global minimum)
+    is run multiple times
+
+    parameters:
+    -----------
+    movies: list of movies
+    distances: square array of pairewise distances
+    k: number of clusters
+    times_run: number of times the clustering is run (for instance 6 or 10)
+
+    returns:
+    --------
+    dictionary with the stable sets
+    '''
+    list_runs = [] #will get all the movies as filename in the clusters
+                   # for instance k = 3:
+                   # [[set1, set2, set3], [set1, set2, set3]]
+    print 'Progression of clustering'
+    for i in xrange(times_run):
+        progression_bar(i, times_run-1, Nbars=times_run-1, char='-')
+        #for a run let's get the clusters
+        m1,m2,c,d1,d2 = chosen_num_cluster(movies, k, distances)
+        list_sets = [] # will receive the sets: [set1, set2, set3]
+        for key in d2.keys():
+            s1 = set(d2[key])
+            s1.add(key)
+            list_sets.append(s1)
+        list_runs.append(list_sets)
+
+    medoids = m2 #the medoids can vary with the runs, but they should be in the same
+                 #clusters, this will allow us to id clusters in different clusters
+
+    #figure out corresponding clusters from the various runs, and bringing them together
+    d = defaultdict(list)
+    #dictionary: d[medoid] = [set1_from_run1, set3_from_run2, ...] containing the medoid
+    for run in list_runs:
+        for set_ in run:
+            for medoid in medoids:
+                if medoid in set_: #identify the right cluster
+                    d[medoid].append(set_)
+
+    #finally, intersect the sets
+    d_intersection = {}
+    for medoid in d.keys():
+        list_sets = d[medoid]
+        for i in range(len(list_sets)):
+            if i == 0:
+                set_intersect = list_sets[i]
+            else:
+                set_intersect = set_intersect.intersection(list_sets[i])
+        d_intersection[medoid] = set_intersect
+
+    #print the stability: how many movies are always together in the same cluster
+    num_movies = 0
+    total_num_movies = len(movies)
+    print '\n'
+    print '*'*50
+    print '**' + ' '*12 + 'stability of clusters' + ' '*13 +'**'
+    print '*'*50
+    for intersect_set in d_intersection.values():
+        num_movies += len(intersect_set)
+        print 'number of movies always in the cluster: '+ str(len(intersect_set))
+    print '-'*50
+    print 'movies that are always in the same cluster: '
+    print 'in numbers: '+ str(num_movies) + ' | in percent: ' + str(num_movies*1./total_num_movies * 100) +'%'
+    print '*'*50
+
+    return d_intersection
+
 if __name__ == '__main__':
     #getting distances in a dictionary
     with open('../data/distances.pkl', 'r') as f:
@@ -298,5 +392,7 @@ if __name__ == '__main__':
         list_distances, d_intracluster_distances = visualize_clusters(d1, d2 ,distances)
 
     elif sys.argv[1][1:] == '_stability':
-        k = int(sys.argv[1][1])
-        
+        k = int(sys.argv[1][0])
+        d_stable_clusters = investigate_stability(movies, distances, 10, k)
+        with open('../data/clusters.pkl', 'w') as f:
+            pickle.dump(d_stable_clusters, f)
