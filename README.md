@@ -80,7 +80,7 @@ A Jupyter Notebook, `jupyter/Explore_closest_movies.ipynb`, is available to give
 
 ## Cluster the movies
 
-The motivation is to group the movies according to the evolution of emotions in their scripts. This is achieved thanks to the pairwise distances calculated previously and a modified Kmeans clustering algorithm called medoids (instead of taking the mean as the prototype of the cluster the median is retained). As with any unsupervised algorithm, assessing the performance of the clustering is not straightforward. Here, I develop 2 ways to investigate the results of clustering: first observing the cost associated with a given number of clusters (option 1)
+The motivation is to group the movies according to the evolution of emotions in their scripts. This is achieved thanks to the pairwise distances calculated previously and a modified Kmeans clustering algorithm called medoids (instead of taking the mean as the prototype of the cluster the median is retained). As with any unsupervised algorithm, assessing the performance of the clustering is not straightforward. Here, I develop 2 ways to investigate the results of clustering: first observing the cost associated with a given number of clusters (option 1), second, analyzing how reproducible the clustering is (option 3).
 
 The code  `code/medoids.py` has 3 main features:
 
@@ -96,7 +96,10 @@ cd code
 python medoids.py k=3
 ```
 
-option 3: to investigate how stable the 3 clusters are when the clustering
-is done several times (change 3 to number of clusters chosen)
+option 3: investigating the reproducibility of the clustering is (change 3 to number of clusters chosen)
+```
+cd code
+python medoids.py 3_stability
+```
 
-$ python medoids.py 3_stability
+The most meaningful clustering occurred for k = 3, as the vast majority of movies stay in the same clusters.
