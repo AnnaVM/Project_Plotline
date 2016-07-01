@@ -80,4 +80,23 @@ A Jupyter Notebook, `jupyter/Explore_closest_movies.ipynb`, is available to give
 
 ## Cluster the movies
 
-**To be done**
+The motivation is to group the movies according to the evolution of emotions in their scripts. This is achieved thanks to the pairwise distances calculated previously and a modified Kmeans clustering algorithm called medoids (instead of taking the mean as the prototype of the cluster the median is retained). As with any unsupervised algorithm, assessing the performance of the clustering is not straightforward. Here, I develop 2 ways to investigate the results of clustering: first observing the cost associated with a given number of clusters (option 1)
+
+The code  `code/medoids.py` has 3 main features:
+
+option 1: picking the number of clusters
+```
+cd code
+python medoids.py pick_k
+```
+
+option 2: running the k medoids algorithm (here for 3 clusters)
+```
+cd code
+python medoids.py k=3
+```
+
+option 3: to investigate how stable the 3 clusters are when the clustering
+is done several times (change 3 to number of clusters chosen)
+
+$ python medoids.py 3_stability
