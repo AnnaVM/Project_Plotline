@@ -4,6 +4,14 @@ This is a **data science project** which analyzes different **movie scripts** an
 
 The aim is then to cluster the movies based on their emotional plotline.
 
+*Example output*
+An example of clustering (3 clusters) is available here:
+
+Page: https://annavm.github.io/Project_Plotline/example/
+
+the page can take a little while to load, you can then use the tools to select a dot, see its name and the corresponding emotional plotline.
+
+Screenshot: ![Screenshot of example_output][ex_out]
 # Requirements and installation
 
 It is recommended to use the [Anaconda](https://www.continuum.io/downloads) distribution, to install a set of standard required packages. Once Anaconda is installed, please type:
@@ -103,3 +111,5 @@ python medoids.py 3_stability
 ```
 
 The most meaningful clustering occurred for k = 3, as the vast majority of movies stay in the same clusters.
+
+[ex_out](https://annavm.github.io/Project_Plotline/example/)
