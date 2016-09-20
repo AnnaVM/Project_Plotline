@@ -70,7 +70,7 @@ cd jupyter
 jupyter notebook Visualize_Emotions.ipynb
 ```
 The dashboard generated with iWidgets allows an interactive view of the different plots.
-![iWidget](https://github.com/AnnaVM/Project_Plotline/blob/gh-pages/md_images/md_dashboard.png"Dashboard View")
+![iWidget](https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/md_dashboard.png "Dashboard View")
 
 ## Compute the pairwise distance
 
@@ -112,4 +112,4 @@ python medoids.py 3_stability
 
 The most meaningful clustering occurred for k = 3, as the vast majority of movies stay in the same clusters.
 
-[ex_out]: https://github.com/AnnaVM/Project_Plotline/tree/master/md_images/screenshot_final_dashboard.png
+[ex_out]: https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/screenshot_final_dashboard.png
