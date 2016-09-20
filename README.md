@@ -2,16 +2,19 @@
 
 This is a **data science project** which analyzes different **movie scripts** and extracts the evolution of the **emotional content** throughout each movie ("emotional plotline").
 
-The aim is then to cluster the movies based on their emotional plotline.
+The aim is then to cluster the movies based on their emotional plotline. A visualization dashboard helps with the exploration of these clusters.
 
 *Example output*
-An example of clustering (3 clusters) is available here:
+
+An example of an interactive dashboard allowing the user to explore the results of clustering (3 clusters) is shown here.
 
 Page: https://annavm.github.io/Project_Plotline/example/
 
-the page can take a little while to load, you can then use the tools to select a dot, see its name and the corresponding emotional plotline.
+the page can take a little while to load, you can then use the tools to select a point, see its name and the corresponding emotional plotline.
 
-Screenshot: ![Screenshot of example_output][ex_out]
+Screenshot:
+![Screenshot of example_output][ex_out]
+
 # Requirements and installation
 
 It is recommended to use the [Anaconda](https://www.continuum.io/downloads) distribution, to install a set of standard required packages. Once Anaconda is installed, please type:
