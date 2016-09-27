@@ -8,7 +8,10 @@ The aim is then to cluster the movies based on their emotional plotline. A visua
 
 An example of an interactive dashboard allowing the user to explore the results of clustering (3 clusters) is shown here.
 
+
 Page: https://annavm.github.io/Project_Plotline/example/
+
+Screencast: ![dashboard demo](https://github.com/AnnaVM/NYTimes_Variations/blob/master/trending_not_trending/example_1/Dashboard_Demo_DonaldTrump.gif "Dashboard demo for Donald Trump query")
 
 the page can take a little while to load, you can then use the tools to select a point, see its name and the corresponding emotional plotline.
 
@@ -120,4 +123,4 @@ The most meaningful clustering occurred for k = 3, as the vast majority of movie
 I build an interactive scatter graph with linked emotional plotline thanks to the `mpld3` package (http://mpld3.github.io/). This package is a great way of combining Javascript, D3js and python. I used an [example of custom plugin](http://mpld3.github.io/examples/custom_plugin.html) to write the appropriate D3js script to develop a tool where the plotlines and the movie name appear on hover.
 
 
-[ex_out]: https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/screenshot_final_dashboard.png
+[ex_out]: https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/screenshot_final_dashboard1.png
