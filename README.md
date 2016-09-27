@@ -16,7 +16,7 @@ Screencast: ![dashboard demo](https://github.com/AnnaVM/Project_Plotline/blob/ma
 the page can take a little while to load, you can then use the tools to select a point, see its name and the corresponding emotional plotline.
 
 Screenshot:
-![Screenshot of example_output](https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/screenshot_final_dashboard1.png "Cluster features")
+![Screenshot of example_output](https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/screenshot_final_dashboard.png "Cluster features")
 
 # Requirements and installation
 
@@ -76,7 +76,10 @@ cd jupyter
 jupyter notebook Visualize_Emotions.ipynb
 ```
 The dashboard generated with iWidgets allows an interactive view of the different plots.
-![iWidget](https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/md_dashboard.png "Dashboard View")
+Screencast:
+![iWidget Screencast](https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/intermediate_dashboard.gif "Dashboard Gif")
+
+Screenshot: ![iWidget](https://github.com/AnnaVM/Project_Plotline/blob/master/md_images/md_dashboard.png "Dashboard View")
 
 ## Compute the pairwise distance
 
