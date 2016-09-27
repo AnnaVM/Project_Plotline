@@ -11,7 +11,7 @@ An example of an interactive dashboard allowing the user to explore the results 
 
 Page: https://annavm.github.io/Project_Plotline/example/
 
-Screencast: ![dashboard demo](https://github.com/AnnaVM/NYTimes_Variations/blob/master/trending_not_trending/example_1/Dashboard_Demo_DonaldTrump.gif "Dashboard demo for Donald Trump query")
+Screencast: ![dashboard demo](https://github.com/AnnaVM/Project_Plotline/blob/master/data/Dashboard_Demo.gif "Dashboard demo")
 
 the page can take a little while to load, you can then use the tools to select a point, see its name and the corresponding emotional plotline.
 
